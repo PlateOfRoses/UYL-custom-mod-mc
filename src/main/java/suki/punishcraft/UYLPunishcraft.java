@@ -3,30 +3,19 @@ package suki.punishcraft;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
-import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.*;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import suki.punishcraft.Effects.ModEffects;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import suki.punishcraft.effect.ModEffects;
 
 public class UYLPunishcraft implements ModInitializer {
 	public static final String MOD_ID = "uyl-punishcraft";
@@ -51,9 +40,10 @@ public class UYLPunishcraft implements ModInitializer {
 
 		LOGGER.info("Hello Fabric world!");
 
-		UseItemCallback.EVENT.register(this::StopCombatItems);
 
-		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> StopCombatItems(player, world, hand));
+		UseItemCallback.EVENT.register(this::StopCombatItems);
+		UseBlockCallback.EVENT.register(this::StopCombatItems);
+
 
 		ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamageTaken, damageTaken, blocked) -> {
 			System.out.println(source.getType());
@@ -66,6 +56,7 @@ public class UYLPunishcraft implements ModInitializer {
 		});
 	}
 
+
 	public ActionResult StopCombatItems(PlayerEntity player, World world, Hand hand) {
 		if (player.hasStatusEffect(ModEffects.COMBAT)) {
 			System.out.println(player.getStackInHand(hand));
@@ -74,5 +65,9 @@ public class UYLPunishcraft implements ModInitializer {
 			}
 		}
 		return ActionResult.PASS;
+	}
+
+	public ActionResult StopCombatItems(PlayerEntity player, World world, Hand hand, HitResult hitResult) {
+		return StopCombatItems(player, world, hand);
 	}
 }

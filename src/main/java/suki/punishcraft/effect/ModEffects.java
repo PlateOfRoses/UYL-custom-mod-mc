@@ -1,6 +1,5 @@
-package suki.punishcraft.Effects;
+package suki.punishcraft.effect;
 
-import net.fabricmc.api.ModInitializer;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
